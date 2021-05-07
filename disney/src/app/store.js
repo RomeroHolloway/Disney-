@@ -1,14 +1,14 @@
-import {configureStore, getDefaultMiddleaware} from '@redux/toolkit'
-import {userReducer} "./features/user/userSlice.js"
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import userReducer from "C:/React Projects/Disney +/disney/src/features/userSlice.js";
 
 
-export default configuration ({
+export default configureStore ({
   reducer:{
-    user:userReducer
+    user:userReducer,
 
   },
-  middleware:getDefaultMiddleaware({
+  middleware:getDefaultMiddleware({
     serializablecheck: false,
 
-  });
+  })
 });

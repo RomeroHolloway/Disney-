@@ -1,13 +1,25 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
+import {useDispatch, useSelector} from 'react-redux';
+import {useHistory} from 'react-router-dom';
+import {selectUserName, selectUserEmail, selectUserPhoto, setUserLoginDetails} from '../features/userSlice.js'
 import {auth,provider} from '../firebase.js'
 
+
 const Header = () => {
+
+const dispatch = useDispatch();
+const history = useHistory();
+const username = useSelector(selectUserName);
+const usephoto = useSelector(selectUserPhoto);
+
+
+
 const handleAuth = () => {
   auth
   .signInWithPopup(provider)
   .then((result) => {
-      console.log(result)
+      setUser(result.user);
   }).catch((error) => {
     alert(error.message);
 
@@ -15,6 +27,23 @@ const handleAuth = () => {
 
 
 };
+
+const setUser = (user) => {
+  dispatch(
+    setUserLoginDetails({
+      name:user.displayName,
+      email:user.email,
+      photo: user.photoURL
+
+
+
+    })
+
+
+
+
+  )
+}
 
 
 
@@ -34,6 +63,15 @@ const handleAuth = () => {
 
 
 </DisneyLogo>
+
+{!username ?(
+<Login onClick ={handleAuth}>Login</Login>
+
+):(
+
+
+<>
+
 
 <DisneyMenu>
 <a href="/home">
@@ -93,8 +131,8 @@ const handleAuth = () => {
 
 </DisneyMenu>
 
-<Login onClick={handleAuth}>Login</Login>
-
+</>
+)}
 
 
 
