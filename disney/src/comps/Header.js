@@ -1,21 +1,34 @@
-import React from 'react';
+import {useEffect} from 'react';
 import styled from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
 import {useHistory} from 'react-router-dom';
-import {selectUserName, selectUserEmail, selectUserPhoto, setUserLoginDetails} from '../features/userSlice.js'
+import {selectUserName, selectUserEmail, selectUserPhoto, setUserLoginDetails, setSignOutState} from '../features/userSlice.js'
 import {auth,provider} from '../firebase.js'
 
 
-const Header = () => {
+
+const Header = (props) => {
 
 const dispatch = useDispatch();
 const history = useHistory();
-const username = useSelector(selectUserName);
-const usephoto = useSelector(selectUserPhoto);
+const userName = useSelector(selectUserName);
+const userPhoto = useSelector(selectUserPhoto);
+
+useEffect(() => {
+  auth.onAuthStateChanged(async(user) =>{
+    if(!user) {
+      setUser(user)
+      history.push('/home')
+    }
+
+});
+}, [userName]);
 
 
 
 const handleAuth = () => {
+  if(!userName) {
+
   auth
   .signInWithPopup(provider)
   .then((result) => {
@@ -26,6 +39,16 @@ const handleAuth = () => {
   });
 
 
+} else if (userName) {
+  auth
+  .signOut()
+  .then(() => {
+    dispatch(setSignOutState());
+    history.push("/");
+
+  })
+  .catch((err) => alert(err.message));
+}
 };
 
 const setUser = (user) => {
@@ -33,7 +56,7 @@ const setUser = (user) => {
     setUserLoginDetails({
       name:user.displayName,
       email:user.email,
-      photo: user.photoURL
+      photo: user.photoURL,
 
 
 
@@ -64,7 +87,7 @@ const setUser = (user) => {
 
 </DisneyLogo>
 
-{!username ?(
+{!userName ?(
 <Login onClick ={handleAuth}>Login</Login>
 
 ):(
@@ -131,6 +154,17 @@ const setUser = (user) => {
 
 </DisneyMenu>
 
+<LogOut>
+<UserIMG src={userPhoto} alt={userName} />
+<DropDownMenu>
+
+<span onclick={handleAuth}>Log Out</span>
+
+</DropDownMenu>
+
+
+</LogOut>
+
 </>
 )}
 
@@ -162,6 +196,9 @@ padding: 0 36px;
 margin-top:6px;
 letter-spacing:16px;
 z-index:3;
+
+
+
 
 `
 
@@ -285,6 +322,57 @@ cursor:pointer;
 :hover {
   background-color:white;
   color:black;
+
+}
+
+
+`
+
+const UserIMG = styled.img`
+height:100%;
+
+
+`
+
+const DropDownMenu = styled.div`
+top:48px;
+right: 0px;
+background: rgb(19, 19 ,19);
+border: 1px solid rgba(151, 151, 151, 0.3)
+border-radius:6px;
+box-shadow: rgba(0 0 0/ 50%) 0px 0px 18px 0px;
+padding:10px;
+font-size:14px;
+letter-spacing: 3px;
+width: 100px;
+opacity:0;
+
+
+
+`
+
+const LogOut = styled.div`
+position: relative;
+height:48px;
+width: 48px;
+dsiplay:flex;
+cursor:pointer;
+align-items:center;
+justify-content:center;
+
+${UserIMG} {
+  border-radius:50%;
+  width:100%;
+  height:100%;
+}
+
+&:hover {
+  ${DropDownMenu}  {
+    opacity: 1;
+    transition-duration:1s;
+
+
+  }
 
 }
 

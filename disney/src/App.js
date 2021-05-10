@@ -20,6 +20,11 @@ function App() {
         <Login/>
 
         </Route>
+        <Route path='/home'>
+
+        <Home/>
+
+        </Route>
         </Switch>
       </Router>
     </div>
