@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import IMGSlider from "./HomeComps/IMGSlider.js"
 
 
-const Home = () => {
+const Home = (props) => {
   return (
     <Wrapper>
 

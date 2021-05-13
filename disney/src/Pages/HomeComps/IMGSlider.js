@@ -1,7 +1,7 @@
 import React from 'react'
 
 
-const IMGSlider = () => {
+const IMGSlider = (props) => {
   return (
     <div></div>
 
